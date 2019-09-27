@@ -1,5 +1,4 @@
 import React from 'react'
-import Link from 'next/link'
 import Head from 'next/head'
 import { Container } from 'next/app';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,7 +12,7 @@ const Home = () => (
 	<Container>
 		<CssBaseline />
 		<Head>
-			<title>LibroBot Admin</title>
+			<title>LibroBot Admin - Voluntarios</title>
 		</Head>
 		<Nav />
 		<Volunteers />

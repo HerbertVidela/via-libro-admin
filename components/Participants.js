@@ -19,26 +19,31 @@ const TableWrapper = styled.div`
 `;
 
 const getVolunteers = async (setParticipants, setLoading, uuid) => {
-	const response = await axios.get(`/events/${uuid}/registrations`);
-	const volunteers = response.data.volunteer;
+	try {
+		if (uuid) {
+			const response = await axios.get(`/events/${uuid}/registrations`);
+			const volunteers = response.data.map(({ volunteer }) => volunteer);
 
-	if (!volunteers) return;
-
-	setParticipants(volunteers);
-	setLoading(false);
+			setParticipants(volunteers);
+			setLoading(false);
+		}
+	} catch (e) {
+		console.log(e);
+	}
 }
 
-const Participants = ({ uuid }) => {
+const Participants = ({ uuid, ...props }) => {
 	const [participants, setParticipants] = useState([]);
 	const [isLoading, setLoading] = useState(true);
 
 	useEffect(() => {
 		getVolunteers(setParticipants, setLoading, uuid);
-	}, []);
+	}, [uuid]);
 
-	console.log(isLoading, participants);
 	if (isLoading)
 		return <div>Cargando....</div>;
+
+	console.log(participants)
 
 	return (
 		<div>
@@ -55,7 +60,7 @@ const Participants = ({ uuid }) => {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{participants.map(volunteer => (
+							{participants.length ? participants.map(volunteer => (
 								<TableRow key={volunteer.psId}>
 									<TableCell component="th" scope="row">
 										{volunteer.name}
@@ -64,7 +69,13 @@ const Participants = ({ uuid }) => {
 									<TableCell>{volunteer.occupation}</TableCell>
 									<TableCell>{volunteer.phone}</TableCell>
 								</TableRow>
-							))}
+							)) : (
+								<TableRow>
+									<TableCell colSpan={4} align="center" size="medium">
+										<b>No hay ningun participantes registrados</b>
+									</TableCell>
+								</TableRow>
+							)}
 						</TableBody>
 					</Table>
 				</Paper>
